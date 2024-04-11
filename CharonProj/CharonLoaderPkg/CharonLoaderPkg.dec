@@ -1,0 +1,5 @@
+[Defines]
+  DEC_SPECIFICATION                 = 0x00010005
+  PACKAGE_NAME                      = CharonLoaderPkg
+  PACKAGE_GUID                      = 73cef68d-d7a4-4536-a6e6-5aa6b4e79a31
+  PACKAGE_VERSION                   = 0.1

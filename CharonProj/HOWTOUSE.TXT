@@ -1,0 +1,23 @@
+### 주의사항 ###
+
+1. 이 커널은 아직 리눅스 환경에서만 빌드 및 테스트되었습니다. 
+따라서 리눅스 외의 환경에서의 동작은 보장되지 않습니다.
+
+2. 코드 실행 전에 커널 컴파일 & 실행에 필요한 dependencies를 모두 만족해야 합니다.
+
+3. 이 커널의 실행에 필요한 쉘 스크립트는 zsh쉘을 기준으로 작성되었습니다. 
+따라서 bash나 csh등을 사용중이라면 build.sh, source.sh, install_dependencies파일의 #!/bin/zsh를 #!/bin/bash등으로 수정하십시오.
+### 설치 가이드 ###
+
+1. github에서 edk2프로젝트를home 경로에 clone한 뒤 edk2폴더 안에서 'git checkout edk2-stable202008'를 입력한다.
+2. edk2 설치 가이드에 따라 edk2를 설치한다.
+3. 커널 빌드 & 실행에 필요한 의존성들을 설치한다.
+	I1) gnu-build-essential
+	I2) gnu-Binutils
+	I3) gnu cross compiler
+	I4) clang cross compiler
+	I5) new lib, FreeType
+4. CharonProj 폴더로 이동한 뒤 './build.sh'명령어를 실행한다. 만약 오류가 발생한다면 'chmod +x ./build.sh'명령어를 통해 실행 권한을 받을 수 있다.
+5. './build.sh'명령어를 통해 커널을 빌드한 후 'source ./source.sh'명령어를 사용해서 qemu 실행에 필요한 alias를 생성한다.
+6. 터미널 창에서 'qemu_charon' alias를 사용해서 커널을 실행한다.
+ 
