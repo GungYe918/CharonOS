@@ -1,11 +1,10 @@
 # CharonOS (for Mac)
  a 64-bit kernel
- 
  This is the version that works on macOS, a version for Linux will be uploaded later.
+ The version of Linux, USB driver, and Mouse operation is included.
 
 
-
-### This kernel is a modified and adapted version of mikanos, an educational operating system, with some added features. 
+### This kernel is a modified and adapted version of [mikanos](https://github.com/uchan-nos/mikanos), an educational operating system, with some added features. 
 
 
 
