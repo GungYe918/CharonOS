@@ -1,5 +1,6 @@
 # CharonOS (for Mac)
  a 64-bit kernel
+ This is the version that works on macOS, a version for Linux will be uploaded later.
 
 
 
@@ -14,5 +15,4 @@
 3. Add a shape function
 4. Aggregate build system (build.sh)
 5. Comments on function behavior descriptions
-6. Add paging function (Implementing...)
-7. Include pre-built packages
+6. Add paging function (Implementing...
