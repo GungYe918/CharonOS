@@ -30,16 +30,15 @@ namespace {
         "         @.@   ",
         "         @@@   ",
     };
-    
 
     //render mouse cursor
     void DrawCursor(PixelWriter* pixel_writer, Vector2D<int> position) { 
         for (int dy = 0; dy < cursorHeight; ++dy) {
             for (int dx = 0; dx < cursorWidth; ++dx) {
                 if (cursor_shape[dy][dx] == '@') {
-                    pixel_writer->Write(600+dx, 400+dy, {0, 0, 0});
+                    pixel_writer->Write(position.x + dx, position.y + dy, {0, 0, 0});
                 } else if (cursor_shape[dy][dx] == '.') {
-                    pixel_writer->Write(600+dx, 400+dy, {255, 255, 255});
+                    pixel_writer->Write(position.x + dx, position.y + dy, {255, 255, 255});
                 }
             }
         }
@@ -63,7 +62,7 @@ namespace {
 //define mouse_class
 MouseCursor::MouseCursor(
     PixelWriter* writer, PixelColor erase_color,
-    Vector2D<int> initial_position
+        Vector2D<int> initial_position
 ) : pixel_writer_{writer},
     erase_color_{erase_color},
     position_{initial_position}

@@ -1,10 +1,17 @@
 TARGET = kernel.elf
 
 # DIR of cpp file
-OBJS = main.o lib/graphics/graphics.o lib/font/font.o	lib/terminal/terminal.o	lib/io/pci.o	lib/io/io_func.o	kernelFont.o	newlib_support.o	\
-		lib/mouse/mouse.o	\
-		#lib/mouse/mouse.o
+OBJS = main.o lib/graphics/graphics.o lib/font/font.o	lib/terminal/terminal.o	lib/io/pci.o	lib/io/io_func.o	lib/font/kernelFont.o	newlib_support.o	\
+		lib/log/logger.o	lib/mouse/mouse.o	libcxx_support.o	\
+		usb/memory.o	usb/device.o	usb/xhci/ring.o	usb/xhci/trb.o	usb/xhci/xhci.o	\
+		usb/xhci/port.o	usb/xhci/device.o	usb/xhci/devmgr.o	usb/xhci/registers.o	\
+		usb/classdriver/base.o	usb/classdriver/hid.o	usb/classdriver/keyboard.o	\
+		usb/classdriver/mouse.o
+
+
 DEPENDS = $(join $(dir $(OBJS)),$(addprefix .,$(notdir $(OBJS:.o=.d))))
+
+CPPFLAGS += -I.
 
 CFLAGS   += -O2 -Wall -g --target=x86_64-elf -ffreestanding -mno-red-zone
 
@@ -20,7 +27,8 @@ all: $(TARGET)
 # clean
 .PHONY: clean
 clean:
-	rm -rf *.o lib/graphics/*.o
+	rm -rf *.o lib/graphics/*.o lib/font/*.o
+	rm	-rf	kernelFont.o
 	rm -rf .main.d lib/graphics/*.d lib/font/.graphics.d
 	rm	-rf	kernel.elf
 
@@ -38,6 +46,7 @@ kernel.elf: $(OBJS) Makefile
 
 %.o: %.c Makefile
 	clang $(CPPFLAGS) $(CFLAGS) -c $<
+
 
 .%.d: %.c
 	clang $(CPPFLAGS) $(CFLAGS) -MM $< > $@

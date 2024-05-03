@@ -114,7 +114,7 @@ class Error {
  *
  * 	8) 이 부분은 Error 클래스의 내부 상태를 저장하기 위해 선언되었다. 
  *
- */
+ * */
 
 
 #define MAKE_ERROR(code) Error((code), __FILE__, __LINE__)
