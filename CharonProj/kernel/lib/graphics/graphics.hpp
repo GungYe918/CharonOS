@@ -16,7 +16,15 @@ extern PixelColor Yellow;
 extern PixelColor Green;
 extern PixelColor Cyan;
 extern PixelColor Blue;
-extern PixelColor Purple; 
+extern PixelColor Purple;
+
+
+/*---------- v0.0.4 UPDATE ----------*/ 
+extern PixelColor Magenta;
+extern PixelColor Lavender;
+extern PixelColor Coral;
+extern PixelColor Navy;
+extern PixelColor Olive;
 
 /*
  * 이 변수들은 특정 색을 나타내는 RGB값을 미리 정의한 것이다.
@@ -136,6 +144,7 @@ void paintEllipse(
     PixelWriter& writer, const Vector2D<int>& center,
     int radiusX, int radiusY, const PixelColor& c
 );
+
 
 /*
  * 디스플레이에 표시할 도형들을 쓰는 함수들이다.

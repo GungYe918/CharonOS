@@ -1,4 +1,6 @@
 #!/bin/zsh
+# zsh 옵션 설정
+setopt nullglob
 
 #
 #   COMMAND
@@ -22,21 +24,24 @@ clean_func() {
     file_count_before=$(find . -maxdepth 3 -type f | wc -l)
 
     # 파일 제거
-    rm -rf *.o lib/graphics/*.o lib/font/*.o lib/terminal/terminal.o
-    rm -rf kernelFont.bin kernelFont.o
-    rm -rf kernel.elf
-    rm -rf lib/font/kernelFont.bin
-    rm -rf lib/io/pci.o
-    rm -rf lib/io/io_func.o
-    rm -rf lib/mouse/mouse.o
-    rm -rf lib/log/logger.o
+    mv *.o                          ../trash 2>/dev/null
+    mv lib/graphics/*.o             ../trash 2>/dev/null
+    mv lib/font/*.o                 ../trash 2>/dev/null
+    mv lib/terminal/terminal.o      ../trash 2>/dev/null 
+    mv kernelFont.bin kernelFont.o  ../trash 2>/dev/null
+    mv kernel.elf                   ../trash 2>/dev/null
+    mv lib/font/kernelFont.bin      ../trash 2>/dev/null
+    mv lib/io/pci.o                 ../trash 2>/dev/null
+    mv lib/io/io_func.o             ../trash 2>/dev/null
+    mv lib/mouse/mouse.o            ../trash 2>/dev/null
+    mv lib/log/logger.o             ../trash 2>/dev/null
 
     # 제거된 파일들의 갯수 계산
     file_count_after=$(find . -maxdepth 1 -type f | wc -l)
     files_removed=$((file_count_before - file_count_after))
 
 
-    echo "Remove $files_removed files"
+    echo "Remove $files_removed .o files"
     cd ..
 
 }
@@ -50,15 +55,17 @@ dclean_func() {
     file_count_before=$(find . -maxdepth 3 -type f | wc -l)
 
     # 의존성 파일(.d) 제거
-    rm .main.d
-    rm .newlib_support.d
-    rm .libcxx_support.d
-    rm lib/font/.font.d lib/font/.kernelFont.d
-    rm lib/graphics/.graphics.d
-    rm lib/io/.pci.d
-    rm lib/log/.logger.d
-    rm lib/mouse/.mouse.d
-    rm lib/terminal/.terminal.d
+    mv .main.d                      ../trash 2>/dev/null
+    mv .newlib_support.d            ../trash 2>/dev/null
+    mv .libcxx_support.d            ../trash 2>/dev/null
+    mv lib/font/.font.d             ../trash 2>/dev/null
+    mv lib/font/.kernelFont.d       ../trash 2>/dev/null
+    mv lib/graphics/.graphics.d     ../trash 2>/dev/null
+    mv lib/log/.logger.d            ../trash 2>/dev/null
+    mv lib/mouse/.mouse.d           ../trash 2>/dev/null
+    mv lib/terminal/.terminal.d     ../trash 2>/dev/null
+    mv lib/pci/.pci.d               ../trash 2>/dev/null
+    mv lib/interrupt/.interrupt.d   ../trash 2>/dev/null
 
     # 제거된 파일들의 갯수 계산
     file_count_after=$(find . -maxdepth 1 -type f | wc -l)
@@ -69,6 +76,18 @@ dclean_func() {
     cd ..
 
 }
+
+# 현재 터미널의 가로 길이를 가져오는 함수
+get_terminal_width() {
+    tput cols
+}
+
+# 가로 길이를 이용하여 '-'로 채운 라인을 생성하는 함수
+generate_horizontal_line() {
+    local width=$1
+    printf "%-${width}s" "-" | tr ' ' '-'
+}
+
 
 
 ### BUILD PROCESS ###
@@ -93,7 +112,7 @@ build_func() {
         echo "buildenv.sh execute. \033[1mSuccess..\033[0m"
         else
         echo -e "\e[1;31mError\e[0m: buildenv.sh failed to execute."
-        exit 0
+        exit 1
         fi
 
     source ./source.sh
@@ -101,7 +120,7 @@ build_func() {
         echo "source.sh execute. \033[1mSuccess..\033[0m"
         else
         echo -e "\e[1;31mError\e[0m: source.sh failed to execute."
-        exit 0
+        exit 1
         fi
 
 
@@ -114,7 +133,7 @@ build_func() {
             echo "\n\033[1mBuild Success\033[0m"
         else
             echo "\n\033[1mfailed to make... Stop.\033[0m"
-            exit 0
+            exit 1
         fi
     cd ..
 
@@ -144,6 +163,11 @@ build_func() {
 
 run_func() {
     $HOME/workspace/CharonProj/devenv/run_qemu.sh $HOME/edk2/Build/CharonLoaderX64/DEBUG_GCC/X64/Loader.efi $HOME/workspace/CharonProj/kernel/kernel.elf
+    if [ $? -ne 0 ]; then
+        echo -e "\033[1m\nfailed to excute QEMU | Error code: $?\033[0m" >&2
+        exit 1
+    fi
+    exit 0
 }
 
 
@@ -190,9 +214,75 @@ if [ "$help" = true ]; then
     echo -e "4. \033[1m--dclean\033[0m: clean all of .d files"
 fi
 
+
+
+
+### 쓰레기통 기능 추가 ###
+
+# 쓰레기통 폴더 경로 설정
+TRASH_DIR="$(dirname "$0")/trash"
+
+# /tmp 내부의 manage_trash 파일 경로 설정
+TRASH_COUNT_FILE="/tmp/manage_trash"
+
+# manage_trash 파일이 존재하지 않는 경우 새로 생성하고 0으로 초기화
+if [ ! -f "$TRASH_COUNT_FILE" ]; then
+    echo 0 > "$TRASH_COUNT_FILE"
+fi
+
+# manage_trash 파일에서 build.sh 실행 횟수 얻기
+count=$(cat "$TRASH_COUNT_FILE")
+
+# 현재 터미널의 가로 길이 계산
+width=$(get_terminal_width)
+line=$(generate_horizontal_line "$width")
+
+
+# count가 3인 경우, 쓰레기통 폴더 내 모든 내용 삭제 및 count를 0으로 재설정
+if [ "$count" -eq 3 ]; then
+    file_count=$(find "$TRASH_DIR" -type f | wc -l)
+    if [ "$file_count" -eq 0 ]; then
+        echo ""
+        echo 0 > "$TRASH_COUNT_FILE"
+    else
+
+        echo 0 > "$TRASH_COUNT_FILE"
+        echo -e "\n"
+        echo -e "$line"
+        echo "Clean Trash...\n"
+        echo "delete " $TRASH_DIR/.*.d
+        echo $TRASH_DIR/*.o   
+        echo $TRASH_DIR/*.elf
+        echo $TRASH_DIR/*.bin
+
+        rm -rf "$TRASH_DIR"/.*.d 2>/dev/null ; rm -rf "$TRASH_DIR"/*.o 2>/dev/null ; rm -rf "$TRASH_DIR"/*.elf 2>/dev/null ; rm -rf "$TRASH_DIR"/*.bin 2>/dev/null    
+        echo -e "$line"
+
+    fi
+
+elif [ "$count" -eq 2 ]; then
+    # 쓰레기통 디렉토리에 파일이 있는지 확인
+    file_count=$(find "$TRASH_DIR" -type f | wc -l)
+    if [ "$file_count" -eq 0 ]; then
+        # 파일이 없는 경우 경고 메시지를 출력하지 않음
+        ((count++))
+        echo $count > "$TRASH_COUNT_FILE"
+    else
+        # 파일이 있는 경우 경고 메시지 출력
+        echo "The next time you run the build.sh file, the contents(old .o, .d files) of the trash folder will be deleted."
+        ((count++))
+        echo $count > "$TRASH_COUNT_FILE"
+    fi
+
+else
+    # 그 외의 경우, count를 1 증가시키고 파일에 저장
+    ((count++))
+    echo $count > "$TRASH_COUNT_FILE"
+fi
+
+
+
+
+
 # alert end of process
 echo -e "\n\n\033[1mProcess end!!\033[0m"
-
-
-
-

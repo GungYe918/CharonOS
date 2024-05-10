@@ -38,6 +38,24 @@ PixelColor Blue = {0, 0, 255};
 // Color purple
 PixelColor Purple = {128, 0, 128};
 
+/*---------- v0.0.4 UPDATE ----------*/ 
+
+// Color Magenta
+PixelColor Magenta = {255, 0, 255};
+
+// Color Lavender
+PixelColor Lavender = {230, 230, 230};
+
+// Color Coral
+PixelColor Coral = {255, 127, 80};
+
+// Color Navy
+PixelColor Navy = {0, 0, 128};
+
+// Color Olive
+PixelColor Olive = {128, 128, 0};
+
+
 
 void RGBResv8BitPerColorPixelWriter::Write(int x, int y, const PixelColor& c) 
 {

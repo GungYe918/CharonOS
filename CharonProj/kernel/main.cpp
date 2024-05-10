@@ -26,13 +26,38 @@
     #include "lib/terminal/terminal.hpp"
 
     // pci
-    #include "lib/io/pci.hpp"
+    #include "lib/pci/pci.hpp"
 
     // mouse
     #include "lib/mouse/mouse.hpp"
 
     // log
     #include "lib/log/logger.hpp"
+
+    // interrupt 
+    #include "lib/interrupt/interrupt.hpp"
+    #include "lib/interrupt/interrupt_asm.h"
+
+    // queue
+    #include "lib/queue/queue.hpp"
+
+    // memory map
+    #include "lib/memory/memory_map.hpp"
+
+    // segments
+    #include "lib/memory/segment/segment.hpp"
+
+    // GDT
+    #include "lib/memory/GDT/gdt.h"
+
+    // paging
+    #include "lib/memory/paging/paging.hpp"
+    #include "lib/memory/paging/paging_asm.h"
+
+    // memory manager
+    #include "lib/memory/MMR/memory_manager.hpp"
+
+
 
 
 // USB driver
@@ -95,6 +120,9 @@ int printk(const char* format, ...) {
  * */
 
 
+char memory_manager_buf[sizeof(BitmapMemoryManager)];
+BitmapMemoryManager* memory_manager;
+
 
 char mouse_cursor_buf[sizeof(MouseCursor)];
 MouseCursor* mouse_cursor;
@@ -128,6 +156,25 @@ void SwichEhci2Xhci(const pci::Device& xhc_dev) {
 
 
 
+/*  xhci handler  */
+usb::xhci::Controller* xhc;
+
+struct Message {
+    enum Type {
+        kInterruptXHCI,
+    } type;
+};
+
+kQueue<Message>* main_queue;
+
+__attribute__((interrupt))
+void IntHandlerXHCI(InterruptFrame* frame) {
+    main_queue->Push(Message{Message::kInterruptXHCI});
+
+    NotifyEndOfInterrupt();
+}
+
+
 
 
 
@@ -138,19 +185,29 @@ void SwichEhci2Xhci(const pci::Device& xhc_dev) {
 
 
 
-
-
-
 // KernelMain
-extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config) 
-{
-    switch (frame_buffer_config.pixel_format) { 				// 1)
-        case kPixelRGBResv8BitPerColor: 					// 2)
+alignas(16) uint8_t kernel_main_stack[1024 * 1024];                 
+extern "C" void KernelMainNewStack(
+    const FrameBufferConfig& frame_buffer_config_ref,
+    const MemoryMap& memory_map_ref
+) {
+
+    /**
+     * 원래 진입점인 KernelMain의 스택 영역을 이동시켰다.
+     * 관련 코드는 memory/new_entry.asm에 작성되어 있다.
+     * 
+    */
+
+    const FrameBufferConfig& frame_buffer_config{frame_buffer_config_ref};
+    const MemoryMap& memory_map{memory_map_ref};
+
+    switch (frame_buffer_config.pixel_format) { 				    // 1)
+        case kPixelRGBResv8BitPerColor: 					        // 2)
             pixel_writer = new(pixel_write_buf)
             RGBResv8BitPerColorPixelWriter{frame_buffer_config};
         break;
 
-        case kPixelBGRResv8BitPerColor: 					// 3)
+        case kPixelBGRResv8BitPerColor: 					        // 3)
             pixel_writer = new(pixel_write_buf)
             BGRResv8BitPerColorPixelWriter{frame_buffer_config};
         break;
@@ -169,6 +226,8 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
      *     3) 만약 픽셀 형식이 BGR 형식이라면 BGR 형식을 따르는 픽셀 작성자를 선택한다. 
      *
      */
+
+    
 
     const int kFrameWidth = frame_buffer_config.horizontal_resolution;
     const int kFrameHeight = frame_buffer_config.vertical_resolution;
@@ -202,11 +261,19 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
         15,
         {160, 160, 160}
     );
+
+
     paintEllipse(
         *pixel_writer,
         {60, kFrameHeight - 50},
         15, 30,
         Red
+    );
+    paintEllipse(
+        *pixel_writer,
+        {200, kFrameHeight - 300},
+        60, 30,
+        Magenta
     );
     paintEllipse(
         *pixel_writer,
@@ -233,6 +300,8 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
         Blue
     );
 
+    
+
 
 
     //enter terminal envirorment
@@ -245,20 +314,62 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
 
 
     printk("CharonOS ver 0.0.4\n"); 		/*  현재 커널의 버전을 표시한다.  */
-    printk("0/O\n");
-    printk("1 + 9 = %d\n", 10);
-    printk("\n\nGungYE is the greatest King of the world!!");
-
-
-
     SetLogLevel(kWarn);
 
+
+
+    SetupSegments();
+
+    const uint16_t kernel_cs = 1 << 3;
+    const uint16_t kernel_ss = 2 << 3;
+    SetDSAll(0);
+    SetCSSS(kernel_cs, kernel_ss);
+
+    SetupIdentityPageTable();
+
+    //mark allocated 
+    ::memory_manager = new(memory_manager_buf) BitmapMemoryManager;
+
+    const auto memory_map_base = reinterpret_cast<uintptr_t>(memory_map.buffer);
+    uintptr_t available_end = 0;
+
+    for (
+        uintptr_t iter = memory_map_base;
+        iter < memory_map_base + memory_map.map_size;
+        iter += memory_map.descriptor_size
+    ) {
+        auto desc = reinterpret_cast<MemoryDescriptor*>(iter);
+
+        if (available_end < desc->physical_start) {
+            memory_manager->MarkAllocated(
+                FrameID{available_end / kBytesPerFrame},
+                (desc->physical_start - available_end) / kBytesPerFrame
+            );
+        }
+
+        const auto physical_end = 
+            desc->physical_start + desc->number_of_pages * kUEFIPageSize;
+
+        if (IsAvailable(static_cast<MemoryType>(desc->type))) {
+            available_end = physical_end;
+        } else {
+            memory_manager->MarkAllocated(
+                FrameID{desc->physical_start / kBytesPerFrame},
+                desc->number_of_pages * kUEFIPageSize / kBytesPerFrame
+            );
+        }
+    }
+    memory_manager->SetMemoryRange(FrameID{1}, FrameID{available_end / kBytesPerFrame});
 
 
     //render mouse cursor
     mouse_cursor = new(mouse_cursor_buf) MouseCursor {
         pixel_writer, DesktopBGColor, {300, 200}
     };
+
+    std::array<Message, 32> main_queue_data;
+    kQueue<Message> main_queue{main_queue_data};
+    ::main_queue = &main_queue;
 
     auto err = pci::ScanAllBus();
     Log(kDebug, "ScanAllBus: %s\n", err.Name());
@@ -289,7 +400,24 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
                 xhc_dev->bus, xhc_dev->device, xhc_dev->function);
     }
 
+
+    SetIDTEntry(idt[InterruptVector::kXHCI], MakeIDTAttr(DescriptorType::kInterruptGate, 0),
+                reinterpret_cast<uint64_t>(IntHandlerXHCI), kernel_cs);
+
+    LoadIDT(sizeof(idt) - 1, reinterpret_cast<uintptr_t>(&idt[0]));
+
+
+    const uint8_t bsp_local_apic_id = 
+        *reinterpret_cast<const uint32_t*>(0xfee00020) >> 24;
     
+    pci::ConfigureMSIFixedDestination(
+        *xhc_dev, bsp_local_apic_id,
+        pci::MSITriggerMode::kLevel, 
+        pci::MSIDeliveryMode::kFixed,
+        InterruptVector::kXHCI, 0
+    );
+
+
 
     const ValueWithError<uint64_t> xhc_bar = pci::ReadBar(*xhc_dev, 0);
     Log(kDebug, "ReadBar: %s\n", xhc_bar.error.Name());
@@ -313,6 +441,9 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
     Log(kInfo, "xHC starting\n");
     xhc.Run();
 
+    ::xhc = &xhc;
+    __asm__("sti");
+
 
     /*  configure port  */
     usb::HIDMouseDriver::default_observer = MouseObserver;
@@ -329,21 +460,33 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config)
                 continue;   
             }
         }
-    }
+    } 
 
-    
     while(1) {
-        if (auto err = ProcessEvent(xhc)) {
-            Log(kError, "Error while ProcessEvent: %s at %s, Line:%d\n",
-                    err.Name(), err.File(), err.Line());
+        __asm__("cli");
+
+        if (main_queue.Count() == 0) {
+            __asm__("sti\n\thlt");
+            continue;
+        }
+
+        Message msg = main_queue.Front();
+        main_queue.Pop();
+        __asm__("sti");
+
+        switch (msg.type) {
+            case Message::kInterruptXHCI:
+                while (xhc.PrimaryEventRing() -> HasFront()) {
+                    if (auto err = ProcessEvent(xhc)) {
+                        Log(kError, "Error while ProcessEvent: %s at %s:%d\n",
+                                err.Name(), err.File(), err.Line());
+                    }
+                }
+                break;
+            default:
+                Log(kError, "Unkown message type: %d\n", msg.type);
         }
     }
-
-
-    while (1) {
-        __asm__("hlt");
-    }
-    /*  임시: 커널의 초기설정이 끝나면 어셈블리어를 사용해서 커널을 정지시킨다.  */
 
 }
 

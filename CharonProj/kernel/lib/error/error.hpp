@@ -30,13 +30,15 @@ class Error {
             kInvalidPhase, 				// 유효하지 않은 단계
             kUnknownXHCISpeedID, 			// 알 수 없는 XHCI속도 ID
             kNoWaiter, 					// 대기열이 없을 경우 반환
+            kNoPCIMSI,
             kLastOfCode, 				// 코드 목록의 마지막을 의미
         };
+        // 22
 
     private:
-        static constexpr std::array code_name_{ 	// code_name_이라는 이름의 array선언 후 오류 코드들의 문자열을 초기
-            "kSuccess", 			
-            "kFull", 
+        static constexpr std::array code_names_{ 	// code_name_이라는 이름의 array선언 후 오류 코드들의 문자열을 초기
+            "kSuccess",
+            "kFull",
             "kEmpty",
             "kNoEnoughMemory",
             "kIndexOutOfRange",
@@ -55,10 +57,11 @@ class Error {
             "kInvalidPhase",
             "kUnknownXHCISpeedID",
             "kNoWaiter",
+            "kNoPCIMSI",
+            //22
         };
 
-        static_assert(Error::Code::kLastOfCode == code_name_.size()); 		// Error::Code::kLastOfCode의 값이 code_name_의 크기와 같은지 확인 후 
-								      		// 불일치 시 컴파일 오류 생성
+        static_assert(Error::Code::kLastOfCode == code_names_.size()); 		// Error::Code::kLastOfCode의 값이 code_name_의 크기와 같은지 확인 후 불일치 시 컴파일 오류 생성
 
 
     public: 
@@ -73,7 +76,7 @@ class Error {
         }
 
         const char* Name() const { 									// 4)
-            return code_name_[static_cast<int>(this->code_)]; 						// 5)
+            return code_names_[static_cast<int>(this->code_)]; 						// 5)
         }
 
         const char* File() const { 									// 6)

@@ -1,6 +1,18 @@
 {
     "files.associations": {
         "printlib.h": "c",
-        "functional": "cpp"
+        "functional": "cpp",
+        "__hash_table": "cpp",
+        "algorithm": "cpp",
+        "chrono": "cpp",
+        "deque": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "string": "cpp",
+        "type_traits": "cpp",
+        "vector": "cpp",
+        "*.tcc": "cpp",
+        "ranges": "cpp"
     }
 }

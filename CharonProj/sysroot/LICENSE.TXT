@@ -1,0 +1,1 @@
+The CharonOS kernel project outside of this folder is under the Apache License 2.0, but newlib inside this folder is under the newlib copyright terms.
