@@ -33,9 +33,10 @@
 #### download Link -> [CLICK](https://mega.nz/folder/xPNRHJgA#9E65uT5mDGZYAwXpMhv_pQ)
 
 
-####HOWTOEXECUTE
+#### HOWTOEXECUTE
 
-"""bash
+"""
+
 qemu-system-x86_64 \
     -m 1G \
     -drive if=pflash,format=raw,readonly,file=OVMF_CODE.fd \
@@ -45,4 +46,5 @@ qemu-system-x86_64 \
     -device usb-mouse -device usb-kbd \
     -monitor stdio \
     $QEMU_OPTS
+
 """
