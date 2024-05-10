@@ -15,7 +15,10 @@
 5. Comments on function behavior descriptions
 
 
-#### UPDATE v0.0.6
+<br>
+
+
+## UPDATE v0.0.6
 1. 메모리 메니저 추가
 2. 페이징 구현
 3. 메모리 맵 구조 구현
