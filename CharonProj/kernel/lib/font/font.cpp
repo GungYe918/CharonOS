@@ -27,7 +27,7 @@ const uint8_t* FetchFont(char f) {
     return &_binary_kernelFont_bin_start + index; 						// 4)
 }
 
-/*
+/**
  * kernelFont 바이너리에서 폰트를 불러오는 함수이다. 입력된 문자가 유효한 범위 내에 있으면 
  * 해당 문자에 해당하는 폰트 데이터의 시작 위치를 반환하고, 
  * 그렇지 않으면 nullptr을 반환한다.
