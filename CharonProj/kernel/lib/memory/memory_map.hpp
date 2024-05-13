@@ -4,52 +4,77 @@
 
 struct MemoryMap {
 
-    unsigned long long buffer_size;
-    void* buffer;
-    unsigned long long map_size;
-    unsigned long long map_key;
-    unsigned long long descriptor_size;
-    uint32_t descriptor_version;
+    unsigned long long buffer_size;             // 메모리 맵 정보를 저장하는 버퍼의 크기
+    void* buffer;                               // 메모리 맵 정보를 저장하는 버퍼의 포인터
+    unsigned long long map_size;                // 메모리 맵의 크기
+    unsigned long long map_key;                 // 메모리 맵의 고유 키 -> 메모리 맵의 정보의 업데이트 여부를 판단
+    unsigned long long descriptor_size;         // 메모리 디스크럽터의 크기
+    uint32_t descriptor_version;                // 메모리 디스크럽터의 버전 -> 메모리 디스크럽터의 형식, 구조 변경 여부를 판별
     
 };
 
 struct MemoryDescriptor {
 
-    uint32_t type;
-    uintptr_t physical_start;
-    uintptr_t virtual_start;
-    uint64_t number_of_pages;
-    uint64_t attribute;
+    uint32_t type;                              // 메모리 영역의 종류를 나타내는 변수
+    uintptr_t physical_start;                   // 메모리 영역의 시작 주소
+    uintptr_t virtual_start;                    // 메모리 영역의 가상 주소
+    uint64_t number_of_pages;                   // 메모리 영역의 페이지 수 (주로 4KB, 8KB, 4MB)
+    uint64_t attribute;                         // 메모리 영역의 속성 -> 읽기, 쓰기 여부, 실행 가능 여부 정의
 
 };
 
-#ifdef __cplusplus              /* Main.c(bootloader)에서 접근할 경우 비활성화 */
-enum class MemoryType {
-    kEfiReservedMemoryType,
-    kEfiLoaderCode,
-    kEfiLoaderData,
-    kEfiBootServicesCode,
-    kEfiBootServicesData,
-    kEfiRuntimeServicesCode,
-    kEfiRuntimeServicesData,
-    kEfiConventionalMemory,
-    kEfiUnusableMemory,
-    kEfiACPIReclaimMemory,
-    kEfiACPIMemoryNVS,
-    kEfiMemoryMappedIO,
-    kEfiMemoryMappedIOPortSpace,
-    kEfiPalCode,
-    kEfiPersistentMemory,
-    kEfiMaxMemoryType
+#ifdef __cplusplus                              /* Main.c(bootloader)에서 접근할 경우 비활성화 */
+enum class MemoryType {                         // UEFI에서 정의된 메모리 타입을 나타내는 열거형
+    
+    kEfiReservedMemoryType,                     // 예약된 메모리 영역
+    kEfiLoaderCode,                             // 부트로더 코드가 로드되는 메모리 영역
+    kEfiLoaderData,                             // 부트로더 데이터가 로드되는 메모리 영역   
+    kEfiBootServicesCode,                       // 부트 서비스의 코드가 위치하는 메모리 영역
+    kEfiBootServicesData,                       // 부트 서비스의 데이터가 위치하는 메모리 영역
+    kEfiRuntimeServicesCode,                    // 런타임 서비스의 코드가 위치하는 메모리 영역
+    kEfiRuntimeServicesData,                    // 런타임 서비스의 데이터가 위치하는 메모리 영역 
+    kEfiConventionalMemory,                     // 일반적으로 사용 가능한 메모리 영역
+    kEfiUnusableMemory,                         // 사용할 수 없는 메모리 영역
+    kEfiACPIReclaimMemory,                      // ACPI(Advanced Configuration and Power Interface)에서 다시 요구되는 메모리
+    kEfiACPIMemoryNVS,                          // ACPI Non-Volatile Storage(NVS) 메모리 영역
+    kEfiMemoryMappedIO,                         // 메모리에 매핑된 입출력(I/O) 영역
+    kEfiMemoryMappedIOPortSpace,                // 메모리에 매핑된 I/O 포트 공간
+    kEfiPalCode,                                // 플랫폼 추상 레이어(PAL) 코드가 위치하는 메모리 영역
+    kEfiPersistentMemory,                       // 영구 저장소(하드 디스크, SSD 등)로 사용되는 메모리 영역
+    kEfiMaxMemoryType                           // 이 열거형의 끝
+
 };
 
+
+
+// MemoryType(rhs) 열거형과 lhs 사이의 벼교 연산을 수행하는 연산자.
 inline bool operator == (uint32_t lhs, MemoryType rhs) {
     return lhs == static_cast<uint32_t>(rhs);
 }
 
+/**
+ * @brief MemoryType(rhs) 열거형과 lhs 사이의 벼교 연산을 수행하는 연산자.
+ * 
+ * 이 연산자는 rhs와 lhs의 값이 같은지를 비교한다. MemoryType열거형이 내부적으로는 
+ * uint32_t로 표현되기 때문에 rhs를 uint32_t값으로 변환하여 비교하게 된다.
+ * 
+*/
+
+
+
+// MemoryType(lhs) 열거형과 rhs 사이의 벼교 연산을 수행하는 연산자.
 inline bool operator == (MemoryType lhs, uint32_t rhs) {
     return rhs == lhs;
 }
+
+/**
+ * @brief MemoryType(lhs) 열거형과 rhs 사이의 벼교 연산을 수행하는 연산자.
+ * 
+ * 위의 연산자와 기능 동일
+ * 
+*/
+
+
 
 inline bool IsAvailable(MemoryType memory_type) {
     return 
@@ -76,5 +101,5 @@ inline bool IsAvailable(MemoryType memory_type) {
  * 
 */
 
-const int kUEFIPageSize = 4096;
+const int kUEFIPageSize = 4096;                 /*  페이지 크기(4KB)  */
 #endif
