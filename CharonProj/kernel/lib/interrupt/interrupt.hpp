@@ -115,12 +115,17 @@ constexpr InterruptDescriptorAttribute MakeIDTAttr(
 }
 
 
+
 void SetIDTEntry (
     InterruptDescriptor& desc,
     InterruptDescriptorAttribute attr,
     uint64_t offset,
     uint16_t segment_selector
 );
+
+/**
+ * interrupt.cpp에서 자세하게 설명
+*/
 
 
 class InterruptVector {
@@ -129,6 +134,22 @@ class InterruptVector {
             kXHCI = 0x40,
         };
 };
+
+/**
+ * @brief 인터럽트 벡터를 설정한다.
+ * 
+ * 인터럽트 벡터란 커널이 처리할 256가지의 
+ * 인터럽트를 효율적으로 관리하기 위해 인터럽트의
+ * 종류마다 다른 번호를 할당하여 관리하는 구조를 말한다.
+ * 
+ * 인터럽트 벡터는 고정적으로 번호가 할당된 것도 있고, 
+ * 개발자의 마음대로 설정할 수 있는 것도 있다.
+ * 예를 들어 0으로 나누는 것에 관한 인터럽트는 0번으로 고정되어 있다.
+ * 
+ * 이 코드에서 XHCI의 경우 USB과 관련된 인터럽트로, 개발자
+ * 마음대로 설정할 수 있다.
+ * 
+*/
 
 
 struct InterruptFrame {
@@ -139,4 +160,28 @@ struct InterruptFrame {
     uint64_t ss;
 };
 
+/**
+ * @brief 인터럽트가 발생했을 때 스택에 저장되는 인터럽트 프레임을 정의한다.
+ * 
+ * rip:
+ *  현재 실행중인 명령의 주소(Instruction Pointer)를 나타내는 64비트 정수형 변수
+ * 
+ * cs:
+ *  현재 실행중인 코드 세그먼트(CS)의 세그먼트 셀렉터를 나타내는 64비트 정수형 변수
+ * 
+ * rflags:
+ *  현재 프로세스의 플래그 레지스터(RFLAGS)를 나타내는 64비트 정수형 변수
+ * 
+ * rsp:
+ *  현재 스택의 주소를 나타내는 64비트 정수형 변수
+ * 
+ * ss:
+ *  현재 실행중인 코드 세그먼트(SS)의 세그먼트 셀렉터를 나타내는 64비트 정수형 변수
+ *  
+*/
+
 void NotifyEndOfInterrupt();
+/**
+ * @brief 인터럽트가 종료되었음을 알리는 메모리를 특정 주소에 작성하는 함수
+ * 
+*/

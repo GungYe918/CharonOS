@@ -19,15 +19,38 @@ struct InterruptDescriptor idt[IDT_SIZE];
 void SetIDTEntry (
     InterruptDescriptor& desc,
     InterruptDescriptorAttribute attr,
-    uint64_t offset,
+    uint64_t offset,  
     uint16_t segment_selector
 ) {
-    desc.attr = attr;
-    desc.offset_low = offset & 0xffffu;
-    desc.offset_middle = (offset >> 16) & 0xffffu;
-    desc.offset_high = offset >> 32;
-    desc.segment_selector = segment_selector;
+    desc.attr = attr;                                   // 1)
+    desc.offset_low = offset & 0xffffu;                 // 2)
+    desc.offset_middle = (offset >> 16) & 0xffffu;      // 3)
+    desc.offset_high = offset >> 32;                    // 4)   
+    desc.segment_selector = segment_selector;           // 5)
 }
+
+/**
+ * 이 함수는 파라미터 desc로 지정한 인터럽트 디스크럽터에 
+ * 여러 설정을 기록하는 함수이다.
+ * 
+ * 동작방식:
+ *  1) 함수 내에 전달된 attr값을 desc의 attr맴버에 할당한다.
+ * 
+ *  2) 함수에 전달된 offset값의 낮은 16비트만 추출하여 
+ *     desc구조체의 offset_low에 저장한다.
+ *      
+ *  3) 함수에 전달된 offset값의 중간 16비트를 추출하여 
+ *     desc구조체의 offset_middle 값에 저장한다.
+ * 
+ *  4) 함수에 전달된 offset값의 높은 16비트를 추출하여
+ *     desc구조체의 offset_high 값에 저장한다.
+ *     
+ *  5) 인터럽트 핸들러가 위치한 코드 세그먼트를 가리키는 
+ *     세그먼트 셀렉터를 저장한다. 
+ *  
+*/
+
+
 
 
 void NotifyEndOfInterrupt() {
