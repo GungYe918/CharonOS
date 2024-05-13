@@ -36,7 +36,7 @@ class Error {
         // 22
 
     private:
-        static constexpr std::array code_names_{ 	// code_name_이라는 이름의 array선언 후 오류 코드들의 문자열을 초기
+        static constexpr std::array code_names_{ 	// code_name_이라는 이름의 array선언 후 오류 코드들의 문자열을 초기화
             "kSuccess",
             "kFull",
             "kEmpty",
