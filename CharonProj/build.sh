@@ -55,17 +55,19 @@ dclean_func() {
     file_count_before=$(find . -maxdepth 3 -type f | wc -l)
 
     # 의존성 파일(.d) 제거
-    mv .main.d                      ../trash 2>/dev/null
-    mv .newlib_support.d            ../trash 2>/dev/null
-    mv .libcxx_support.d            ../trash 2>/dev/null
-    mv lib/font/.font.d             ../trash 2>/dev/null
-    mv lib/font/.kernelFont.d       ../trash 2>/dev/null
-    mv lib/graphics/.graphics.d     ../trash 2>/dev/null
-    mv lib/log/.logger.d            ../trash 2>/dev/null
-    mv lib/mouse/.mouse.d           ../trash 2>/dev/null
-    mv lib/terminal/.terminal.d     ../trash 2>/dev/null
-    mv lib/pci/.pci.d               ../trash 2>/dev/null
-    mv lib/interrupt/.interrupt.d   ../trash 2>/dev/null
+    mv .main.d                              ../trash 2>/dev/null
+    mv .newlib_support.d                    ../trash 2>/dev/null
+    mv .libcxx_support.d                    ../trash 2>/dev/null
+    mv lib/font/.font.d                     ../trash 2>/dev/null
+    mv lib/font/.kernelFont.d               ../trash 2>/dev/null
+    mv lib/graphics/.graphics.d             ../trash 2>/dev/null
+    mv lib/log/.logger.d                    ../trash 2>/dev/null
+    mv lib/mouse/.mouse.d                   ../trash 2>/dev/null
+    mv lib/terminal/.terminal.d             ../trash 2>/dev/null
+    mv lib/pci/.pci.d                       ../trash 2>/dev/null
+    mv lib/interrupt/.interrupt.d           ../trash 2>/dev/null
+    mv lib/memory/MMR/.memory_manager.d     ../trash 2>/dev/null
+    
 
     # 제거된 파일들의 갯수 계산
     file_count_after=$(find . -maxdepth 1 -type f | wc -l)
