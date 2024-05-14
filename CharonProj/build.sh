@@ -31,11 +31,18 @@ clean_func() {
     mv kernelFont.bin kernelFont.o              ../trash 2>/dev/null
     mv kernel.elf                               ../trash 2>/dev/null
     mv lib/font/kernelFont.bin                  ../trash 2>/dev/null
-    mv lib/io/pci.o                             ../trash 2>/dev/null
+    mv lib/pci/pci.o                            ../trash 2>/dev/null
     mv lib/io/io_func.o                         ../trash 2>/dev/null
     mv lib/mouse/mouse.o                        ../trash 2>/dev/null
     mv lib/log/logger.o                         ../trash 2>/dev/null
+    mv lib/memory/new_entry.o                   ../trash 2>/dev/null
+    mv lib/memory/GDT/gdt.o                     ../trash 2>/dev/null
+    mv lib/memory/segment/segment.o             ../trash 2>/dev/null
+    mv lib/memory/paging/paging.o               ../trash 2>/dev/null
+    mv lib/memory/paging/paging_asm.o           ../trash 2>/dev/null
     mv lib/memory/MMR/memory_manager.o          ../trash 2>/dev/null
+    mv lib/compositor/window.o                  ../trash 2>/dev/null
+    
 
 
     # 제거된 파일들의 갯수 계산
@@ -68,7 +75,11 @@ dclean_func() {
     mv lib/terminal/.terminal.d             ../trash 2>/dev/null
     mv lib/pci/.pci.d                       ../trash 2>/dev/null
     mv lib/interrupt/.interrupt.d           ../trash 2>/dev/null
+    mv lib/memory/segment/.segment.d        ../trash 2>/dev/null
+    mv lib/memory/paging/.paging.d          ../trash 2>/dev/null
     mv lib/memory/MMR/.memory_manager.d     ../trash 2>/dev/null
+    mv lib/compositor/.window.d             ../trash 2>/dev/null
+
     
 
     # 제거된 파일들의 갯수 계산

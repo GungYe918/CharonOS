@@ -30,24 +30,24 @@ extern PixelColor Olive;
  * 이 변수들은 특정 색을 나타내는 RGB값을 미리 정의한 것이다.
  * */
 
+inline bool operator==(const PixelColor& lhs, const PixelColor& rhs) {
+    return (lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b);
+}
+
+inline bool operator!=(const PixelColor& lhs, const PixelColor& rhs) {
+    return !(lhs==rhs);
+}
+
 
 class PixelWriter { 	
     public:
-        PixelWriter(const FrameBufferConfig& config) : config_{config} {
-      }
-    virtual ~PixelWriter() = default;
-    virtual void Write(int x, int y, const PixelColor& c) = 0;
-
-    protected:
-        uint8_t* PixelAt(int x, int y) {
-        return config_.frame_buffer + 4 * (config_.pixels_per_scan_line * y + x);
-  }
-
-    private:
-        const FrameBufferConfig& config_;
+        virtual ~PixelWriter() = default;
+        virtual void Write(int x, int y, const PixelColor& c) = 0;
+        virtual int Width() const = 0;
+        virtual int Height() const = 0;
 };
 
-/*
+/* ======== v0.0.2 ========= (수정 필요!)
  * PixelWriter:
  * 	이 클래스는 FrameBufferConfig를 사용하여 화면에 픽셀을 쓰는 기능을 가진 함수들을
  * 	포괄하는 클래스이다. 각 변수들은 virtual형태로 구현되어 있으며, 아래의 코드에서 정의된다.
@@ -66,18 +66,37 @@ class PixelWriter {
  *
  * */
 
-
-
-
-class RGBResv8BitPerColorPixelWriter : public PixelWriter {
+class FrameBufferWriter : public PixelWriter {
     public:
-        using PixelWriter::PixelWriter;
+        FrameBufferWriter(const FrameBufferConfig& config) : config_{config} {}
+
+        virtual ~FrameBufferWriter() = default;
+        virtual int Width() const override {  return config_.horizontal_resolution;  }
+        virtual int Height() const override {  return config_.vertical_resolution;  }
+
+
+    protected:
+        uint8_t* PixelAt(int x, int y) {
+            return config_.frame_buffer + 4 * (config_.pixels_per_scan_line * y + x);
+        }
+
+
+    private:
+        const FrameBufferConfig& config_;
+};
+
+
+
+
+class RGBResv8BitPerColorPixelWriter : public FrameBufferWriter {
+    public:
+        using FrameBufferWriter::FrameBufferWriter;
     virtual void Write(int x, int y, const PixelColor& c) override;
 };
 
-class BGRResv8BitPerColorPixelWriter : public PixelWriter {
+class BGRResv8BitPerColorPixelWriter : public FrameBufferWriter {
     public:
-        using PixelWriter::PixelWriter;
+        using FrameBufferWriter::FrameBufferWriter;
     virtual void Write(int x, int y, const PixelColor& c) override;
 };
 
@@ -144,6 +163,13 @@ void paintEllipse(
     PixelWriter& writer, const Vector2D<int>& center,
     int radiusX, int radiusY, const PixelColor& c
 );
+
+
+const PixelColor kDesktopBGColor{45, 118, 237};
+const PixelColor kDesktopFGColor{255, 255, 255};
+
+
+void DrawDesktop(PixelWriter& writer);
 
 
 /*

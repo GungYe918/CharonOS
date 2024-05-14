@@ -1,8 +1,8 @@
 TARGET = kernel.elf
 
 # DIR of cpp file
-OBJS = main.o lib/graphics/graphics.o lib/font/font.o	lib/terminal/terminal.o	lib/pci/pci.o	lib/io/io_func.o	lib/font/kernelFont.o	newlib_support.o	\
-		lib/log/logger.o	lib/mouse/mouse.o	libcxx_support.o	\
+OBJS = 	main.o lib/graphics/graphics.o lib/font/font.o	lib/terminal/terminal.o	lib/pci/pci.o	lib/io/io_func.o	lib/font/kernelFont.o	\
+		lib/log/logger.o	lib/mouse/mouse.o	libcxx_support.o	newlib_support.o	\
 		usb/memory.o	usb/device.o	usb/xhci/ring.o	usb/xhci/trb.o	usb/xhci/xhci.o	\
 		usb/xhci/port.o	usb/xhci/device.o	usb/xhci/devmgr.o	usb/xhci/registers.o	\
 		usb/classdriver/base.o	usb/classdriver/hid.o	usb/classdriver/keyboard.o	\
@@ -10,7 +10,7 @@ OBJS = main.o lib/graphics/graphics.o lib/font/font.o	lib/terminal/terminal.o	li
 		lib/memory/new_entry.o	\
 		lib/memory/segment/segment.o	lib/memory/GDT/gdt.o	lib/memory/paging/paging.o	\
 		lib/memory/paging/paging_asm.o	\
-		lib/memory/MMR/memory_manager.o
+		lib/memory/MMR/memory_manager.o	lib/compositor/window.o
 
 
 DEPENDS = $(join $(dir $(OBJS)),$(addprefix .,$(notdir $(OBJS:.o=.d))))

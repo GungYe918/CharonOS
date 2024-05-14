@@ -214,3 +214,33 @@ void paintEllipse(
     
     }
 }
+
+void DrawDesktop(PixelWriter& writer) {
+    const auto width = writer.Width();
+    const auto height = writer.Height();
+
+    fillRectangle(
+        writer,
+        {0, 0},
+        {width, height - 50},
+        kDesktopBGColor
+    );
+    fillRectangle(
+        writer,
+        {0, height - 50},
+        {width, 50},
+        Black
+    );
+    fillRectangle(
+        writer,
+        {0, height - 50},
+        {width / 5, 50},
+        Grey
+    );
+    paintCircle(
+        writer,
+        {10 + 30 / 2, height - 40 + 30 / 2},
+        15,
+        {160, 160, 160}
+    );
+}
