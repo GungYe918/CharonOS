@@ -12,21 +12,27 @@
 #include "../../error/error.hpp"
 
 namespace {
+
+    // KB 크기의 자료를 처리하는 연산자 
     constexpr unsigned long long operator""_KiB(unsigned long long kib) {
         return kib * 1024;
     }
 
+    // MB 크기의 자료를 처리하는 연산자
     constexpr unsigned long long operator""_MiB(unsigned long long mib) {
         return mib * 1024_KiB;
     }
 
+    // GB 크기의 자료를 처리하는 연산자
     constexpr unsigned long long operator""_GiB(unsigned long long gib) {
         return gib * 1024_MiB;
     }
 }
 
+// 페이지 프레임 당 바이트 수를 설정
 static const auto kBytesPerFrame(4_KiB);
 
+// FrameID 정의
 class FrameID {
     public:
         explicit FrameID(size_t id) : id_{id} {}
@@ -37,6 +43,7 @@ class FrameID {
         size_t id_;
 };
 
+// 허용 범위를 벗어난 페이지 프레임을 정의
 static const FrameID kNullFrame(std::numeric_limits<size_t>::max());
 
 /**
@@ -51,6 +58,8 @@ static const FrameID kNullFrame(std::numeric_limits<size_t>::max());
  * 
 */
 
+
+// 비트맵을 이용하여 메모리를 관리하는 메모리 관리자
 class BitmapMemoryManager {
     public:
         /*  이 메모리 관리 클래스가 처리할 수 있는 최대 물리 메모리 양(Bytes 단위)  */
@@ -63,7 +72,7 @@ class BitmapMemoryManager {
         /*  비트맵 배열 요소 형식  */
         using MapLineType = unsigned long;
 
-        /*  비트맵 배열 하나의 요소의 비트 수 == 프레임 수  */
+        /*  비트맵 배열 하나의 요소의 비트 수 => 프레임 수  */
         static const size_t kBitsPerMapLine{8 * sizeof(MapLineType)};
 
         BitmapMemoryManager();
