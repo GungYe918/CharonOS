@@ -164,7 +164,7 @@ build_func() {
 }
 
 run_func() {
-    $HOME/workspace/CharonProj/devenv/run_qemu.sh $HOME/edk2/Build/CharonLoaderX64/DEBUG_GCC/X64/Loader.efi $HOME/workspace/CharonProj/kernel/kernel.elf
+    ./build/run_qemu.sh $HOME/edk2/Build/CharonLoaderX64/DEBUG_GCC/X64/Loader.efi $HOME/workspace/CharonProj/kernel/kernel.elf
     if [ $? -ne 0 ]; then
         echo -e "\033[1m\nfailed to excute QEMU | Error code: $?\033[0m" >&2
         exit 1
