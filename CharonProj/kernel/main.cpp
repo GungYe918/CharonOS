@@ -313,7 +313,7 @@ extern "C" void KernelMainNewStack(
 
 
 
-    printk("CharonOS ver 0.0.4\n"); 		/*  현재 커널의 버전을 표시한다.  */
+    printk("CharonOS v0.0.7\n"); 		/*  현재 커널의 버전을 표시한다.  */
     SetLogLevel(kWarn);
 
 

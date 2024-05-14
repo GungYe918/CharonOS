@@ -1,8 +1,6 @@
-usb/xhci/trb.o: usb/xhci/trb.cpp usb/xhci/trb.hpp \
-  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/cstdint \
-  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/__config \
-  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/stdint.h \
+lib/memory/segment/segment.o: lib/memory/segment/segment.cpp lib/memory/segment/segment.hpp \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/array \
+  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/__config \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/__tuple \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/cstddef \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/version \
@@ -11,6 +9,8 @@ usb/xhci/trb.o: usb/xhci/trb.cpp usb/xhci/trb.hpp \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/initializer_list \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/cstring \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/string.h \
+  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/cstdint \
+  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/stdint.h \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/__debug \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/iterator \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/iosfwd \
@@ -31,7 +31,5 @@ usb/xhci/trb.o: usb/xhci/trb.cpp usb/xhci/trb.hpp \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/_ansi.h \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/functional \
   /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/bit \
-  usb/xhci/context.hpp usb/endpoint.hpp usb/error.hpp \
-  usb/../lib/error/error.hpp \
-  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/cstdio \
-  /home/gungye/src/CharonOS/CharonProj/devenv/x86_64-elf/include/c++/v1/stdio.h
+  lib/memory/segment/../x86_descriptor.hpp \
+  lib/memory/segment/../GDT/gdt.h

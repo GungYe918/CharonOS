@@ -24,17 +24,19 @@ clean_func() {
     file_count_before=$(find . -maxdepth 3 -type f | wc -l)
 
     # 파일 제거
-    mv *.o                          ../trash 2>/dev/null
-    mv lib/graphics/*.o             ../trash 2>/dev/null
-    mv lib/font/*.o                 ../trash 2>/dev/null
-    mv lib/terminal/terminal.o      ../trash 2>/dev/null 
-    mv kernelFont.bin kernelFont.o  ../trash 2>/dev/null
-    mv kernel.elf                   ../trash 2>/dev/null
-    mv lib/font/kernelFont.bin      ../trash 2>/dev/null
-    mv lib/io/pci.o                 ../trash 2>/dev/null
-    mv lib/io/io_func.o             ../trash 2>/dev/null
-    mv lib/mouse/mouse.o            ../trash 2>/dev/null
-    mv lib/log/logger.o             ../trash 2>/dev/null
+    mv *.o                                      ../trash 2>/dev/null
+    mv lib/graphics/*.o                         ../trash 2>/dev/null
+    mv lib/font/*.o                             ../trash 2>/dev/null
+    mv lib/terminal/terminal.o                  ../trash 2>/dev/null 
+    mv kernelFont.bin kernelFont.o              ../trash 2>/dev/null
+    mv kernel.elf                               ../trash 2>/dev/null
+    mv lib/font/kernelFont.bin                  ../trash 2>/dev/null
+    mv lib/io/pci.o                             ../trash 2>/dev/null
+    mv lib/io/io_func.o                         ../trash 2>/dev/null
+    mv lib/mouse/mouse.o                        ../trash 2>/dev/null
+    mv lib/log/logger.o                         ../trash 2>/dev/null
+    mv lib/memory/MMR/memory_manager.o          ../trash 2>/dev/null
+
 
     # 제거된 파일들의 갯수 계산
     file_count_after=$(find . -maxdepth 1 -type f | wc -l)
@@ -164,7 +166,7 @@ build_func() {
 }
 
 run_func() {
-    ./build/run_qemu.sh $HOME/edk2/Build/CharonLoaderX64/DEBUG_GCC/X64/Loader.efi $HOME/workspace/CharonProj/kernel/kernel.elf
+    ./build/run_qemu.sh $HOME/edk2/Build/CharonLoaderX64/DEBUG_GCC/X64/Loader.efi kernel/kernel.elf
     if [ $? -ne 0 ]; then
         echo -e "\033[1m\nfailed to excute QEMU | Error code: $?\033[0m" >&2
         exit 1
