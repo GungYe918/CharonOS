@@ -57,6 +57,9 @@
     // memory manager
     #include "lib/memory/MMR/memory_manager.hpp"
 
+    // window compositor
+    #include "lib/compositor/window/window.hpp"
+
 
 
 

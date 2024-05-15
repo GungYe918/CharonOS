@@ -10,7 +10,7 @@ OBJS = 	main.o lib/graphics/graphics.o lib/font/font.o	lib/terminal/terminal.o	l
 		lib/memory/new_entry.o	\
 		lib/memory/segment/segment.o	lib/memory/GDT/gdt.o	lib/memory/paging/paging.o	\
 		lib/memory/paging/paging_asm.o	\
-		lib/memory/MMR/memory_manager.o	lib/compositor/window.o
+		lib/memory/MMR/memory_manager.o	lib/compositor/window/window.o	lib/compositor/layer/layer.o
 
 
 DEPENDS = $(join $(dir $(OBJS)),$(addprefix .,$(notdir $(OBJS:.o=.d))))

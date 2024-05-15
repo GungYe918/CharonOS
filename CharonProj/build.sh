@@ -41,7 +41,7 @@ clean_func() {
     mv lib/memory/paging/paging.o               ../trash 2>/dev/null
     mv lib/memory/paging/paging_asm.o           ../trash 2>/dev/null
     mv lib/memory/MMR/memory_manager.o          ../trash 2>/dev/null
-    mv lib/compositor/window.o                  ../trash 2>/dev/null
+    mv lib/compositor/window/window.o                  ../trash 2>/dev/null
     
 
 
@@ -78,7 +78,7 @@ dclean_func() {
     mv lib/memory/segment/.segment.d        ../trash 2>/dev/null
     mv lib/memory/paging/.paging.d          ../trash 2>/dev/null
     mv lib/memory/MMR/.memory_manager.d     ../trash 2>/dev/null
-    mv lib/compositor/.window.d             ../trash 2>/dev/null
+    mv lib/compositor/window/.window.d      ../trash 2>/dev/null
 
     
 
