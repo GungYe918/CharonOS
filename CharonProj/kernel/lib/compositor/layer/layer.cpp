@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+
+
 Layer::Layer(unsigned int id) : id_{id} { }
 
 unsigned int Layer::ID() const {
@@ -98,5 +100,15 @@ void LayerManager::Hide(unsigned int id) {
 }   
 
 Layer* FindLayer(unsigned int id) {
-    // later
+    auto pred = [id](const std::unique_ptr<Layer>& elem) {
+        return elem -> ID() == id;
+    };
+
+    auto it = std::find_if(layers_.begin(), layers_.end(), pred);
+    if (it == layers_.end()) {
+        return nullptr;
+    }
+    return it -> get();
 }
+
+LayerManager* layer_manager;
