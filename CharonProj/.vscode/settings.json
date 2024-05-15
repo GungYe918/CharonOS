@@ -19,6 +19,7 @@
         "tuple": "cpp",
         "variant": "cpp",
         "__functional_base": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "cstdint": "cpp"
     }
 }

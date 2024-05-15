@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <optional>
-#include "../graphics/graphics.hpp"
+#include "../../graphics/graphics.hpp"
 
 
 class Window {

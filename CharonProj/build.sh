@@ -26,22 +26,22 @@ clean_func() {
     # 파일 제거
     mv *.o                                      ../trash 2>/dev/null
     mv lib/graphics/*.o                         ../trash 2>/dev/null
-    mv lib/font/*.o                             ../trash 2>/dev/null
+    mv lib/font/font.o                          ../trash 2>/dev/null
     mv lib/terminal/terminal.o                  ../trash 2>/dev/null 
-    mv kernelFont.bin kernelFont.o              ../trash 2>/dev/null
     mv kernel.elf                               ../trash 2>/dev/null
-    mv lib/font/kernelFont.bin                  ../trash 2>/dev/null
     mv lib/pci/pci.o                            ../trash 2>/dev/null
     mv lib/io/io_func.o                         ../trash 2>/dev/null
     mv lib/mouse/mouse.o                        ../trash 2>/dev/null
     mv lib/log/logger.o                         ../trash 2>/dev/null
+    mv lib/interrupt/interrupt_asm.o            ../trash 2>/dev/null
+    mv lib/interrupt/interrupt.o                ../trash 2>/dev/null
     mv lib/memory/new_entry.o                   ../trash 2>/dev/null
     mv lib/memory/GDT/gdt.o                     ../trash 2>/dev/null
     mv lib/memory/segment/segment.o             ../trash 2>/dev/null
     mv lib/memory/paging/paging.o               ../trash 2>/dev/null
     mv lib/memory/paging/paging_asm.o           ../trash 2>/dev/null
     mv lib/memory/MMR/memory_manager.o          ../trash 2>/dev/null
-    mv lib/compositor/window/window.o                  ../trash 2>/dev/null
+    mv lib/compositor/window/window.o           ../trash 2>/dev/null
     
 
 
@@ -68,7 +68,6 @@ dclean_func() {
     mv .newlib_support.d                    ../trash 2>/dev/null
     mv .libcxx_support.d                    ../trash 2>/dev/null
     mv lib/font/.font.d                     ../trash 2>/dev/null
-    mv lib/font/.kernelFont.d               ../trash 2>/dev/null
     mv lib/graphics/.graphics.d             ../trash 2>/dev/null
     mv lib/log/.logger.d                    ../trash 2>/dev/null
     mv lib/mouse/.mouse.d                   ../trash 2>/dev/null

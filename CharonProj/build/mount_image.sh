@@ -17,4 +17,13 @@ then
 fi
 
 mkdir -p $MOUNT_POINT
-sudo mount -o loop $DISK_IMG $MOUNT_POINT
+
+if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS인 경우
+    echo "1"
+elif [[ "$(uname)" == "Linux" ]]; then
+    # Linux인 경우
+    sudo mount -o loop $DISK_IMG $MOUNT_POINT
+else
+    echo "Unsupported operating system"
+fi

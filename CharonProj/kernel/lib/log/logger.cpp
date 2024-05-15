@@ -6,6 +6,7 @@
 // include - system
 #include <cstddef>
 #include <cstdio>
+#include <cstdarg>
 
 
 namespace {
