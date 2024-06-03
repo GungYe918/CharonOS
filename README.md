@@ -47,3 +47,7 @@ qemu-system-x86_64 \
     -monitor stdio \
     $QEMU_OPTS
 ```
+
+## Images
+
+![Simple UI & implementing mouse](images/simple_UI.png)
