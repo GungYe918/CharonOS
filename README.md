@@ -17,7 +17,6 @@
 
 <br>
 
-
 ## UPDATE v0.0.6
 1. 메모리 메니저 추가
 2. 페이징 구현
@@ -47,7 +46,8 @@ qemu-system-x86_64 \
     -monitor stdio \
     $QEMU_OPTS
 ```
+<br>
+<br>
 
 ## Images
-
 ![Simple UI & implementing mouse](images/simple_UI.png)
